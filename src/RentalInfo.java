@@ -3,24 +3,28 @@ import java.util.HashMap;
 
 public class RentalInfo {
 
+    // Optimización: Definir Constantes
     // Constantes para los códigos de tipo de película
     private static final String REGULAR = "regular";
     private static final String NEW_RELEASE = "new";
     private static final String CHILDRENS = "childrens";
 
+    // Code Smell: Long Method
+    // Fix : Extract Method
     public String statement(Customer customer) {
-        HashMap<String, Movie> movies = createMoviesMap();
+        HashMap<String, Movie> movies = crearMapaPeliculas();
 
         double totalAmount = 0;
         int frequentEnterPoints = 0;
 
+        // Optimización: Clase StringBuilder
         // Utilizar StringBuilder para construir el resultado
         StringBuilder resultBuilder = new StringBuilder();
         resultBuilder.append("Rental Record for ").append(customer.getName()).append("\n");
 
         for (MovieRental rental : customer.getRentals()) {
-            double thisAmount = calculateAmount(rental, movies);
-            frequentEnterPoints += calculateFrequentEnterPoints(rental, movies);
+            double thisAmount = calcularMonto(rental, movies);
+            frequentEnterPoints += calcularPuntosFrecuentes(rental, movies);
 
             // Utilizar StringBuilder para construir la línea de resultados
             resultBuilder.append("\t")
@@ -39,8 +43,9 @@ public class RentalInfo {
         return resultBuilder.toString();
     }
 
+    // Extract Method : crearMapaPeliculas
     // Crear el mapa de películas
-    private HashMap<String, Movie> createMoviesMap() {
+    private HashMap<String, Movie> crearMapaPeliculas() {
         HashMap<String, Movie> movies = new HashMap<>();
         movies.put("F001", new Movie("You've Got Mail", REGULAR));
         movies.put("F002", new Movie("Matrix", REGULAR));
@@ -49,8 +54,9 @@ public class RentalInfo {
         return movies;
     }
 
+    // Extract Method : calcularMonto
     // Calcular el monto de la película según su tipo y días de alquiler
-    private double calculateAmount(MovieRental rental, HashMap<String, Movie> movies) {
+    private double calcularMonto(MovieRental rental, HashMap<String, Movie> movies) {
         Movie movie = movies.get(rental.getMovieId());
         double amount = 0;
         String movieCode = movie.getCode();
@@ -76,8 +82,9 @@ public class RentalInfo {
         return amount;
     }
 
+    // Extract Method : calcularPuntosFrecuentes
     // Calcular los puntos frecuentes según el tipo de película y días de alquiler
-    private int calculateFrequentEnterPoints(MovieRental rental, HashMap<String, Movie> movies) {
+    private int calcularPuntosFrecuentes(MovieRental rental, HashMap<String, Movie> movies) {
         Movie movie = movies.get(rental.getMovieId());
         int frequentEnterPoints = 1;
         String movieCode = movie.getCode();
